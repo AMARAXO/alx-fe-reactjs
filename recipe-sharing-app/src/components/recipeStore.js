@@ -1,16 +1,36 @@
-import create from 'zustand'
+import create from 'zustand';
 
 const useRecipeStore = create(set => ({
   recipes: [],
-  addRecipe: (newRecipe) => set(state => ({ recipes: [...state.recipes, newRecipe] })),
-  setRecipes: (recipes) => set({ recipes }),
-  updateRecipe: (updatedRecipe) => set(state => ({
-    recipes: state.recipes.map(recipe => 
-      recipe.id === updatedRecipe.id ? updatedRecipe : recipe
+  searchTerm: '',
+  filteredRecipes: [],
+
+  // Action to update the search term and filter recipes
+  setSearchTerm: (term) => set(state => {
+    const lowercasedTerm = term.toLowerCase();
+    return {
+      searchTerm: term,
+      filteredRecipes: state.recipes.filter(recipe =>
+        recipe.title.toLowerCase().includes(lowercasedTerm) ||
+        recipe.ingredients.some(ingredient =>
+          ingredient.toLowerCase().includes(lowercasedTerm)
+        ) ||
+        recipe.preparationTime.toString().includes(lowercasedTerm)
+      )
+    };
+  }),
+
+  // Action to set recipes and apply the current search term filter
+  setRecipes: (recipes) => set(state => ({
+    recipes,
+    filteredRecipes: recipes.filter(recipe =>
+      recipe.title.toLowerCase().includes(state.searchTerm.toLowerCase()) ||
+      recipe.ingredients.some(ingredient =>
+        ingredient.toLowerCase().includes(state.searchTerm.toLowerCase())
+      ) ||
+      recipe.preparationTime.toString().includes(state.searchTerm.toLowerCase())
     )
   })),
-  deleteRecipe: (recipeId) => set(state => ({
-    recipes: state.recipes.filter(recipe => recipe.id !== recipeId)
-  }))
 }));
+
 export { useRecipeStore };
