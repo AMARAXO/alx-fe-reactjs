@@ -2,8 +2,10 @@ import create from 'zustand';
 
 const useRecipeStore = create(set => ({
   recipes: [],
+  favorites: [],
   searchTerm: '',
   filteredRecipes: [],
+  recommendations: [],
 
   // Action to update the search term and filter recipes
   setSearchTerm: (term) => set(state => {
@@ -31,6 +33,25 @@ const useRecipeStore = create(set => ({
       recipe.preparationTime.toString().includes(state.searchTerm.toLowerCase())
     )
   })),
+
+  // Action to add a recipe to favorites
+  addFavorite: (recipeId) => set(state => ({
+    favorites: [...state.favorites, recipeId]
+  })),
+
+  // Action to remove a recipe from favorites
+  removeFavorite: (recipeId) => set(state => ({
+    favorites: state.favorites.filter(id => id !== recipeId)
+  })),
+
+  // Action to generate personalized recommendations
+  generateRecommendations: () => set(state => {
+    // Example: Recommend recipes that are not in favorites
+    const recommended = state.recipes.filter(recipe =>
+      !state.favorites.includes(recipe.id) && Math.random() > 0.5
+    );
+    return { recommendations: recommended };
+  }),
 }));
 
 export { useRecipeStore };

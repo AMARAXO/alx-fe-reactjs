@@ -1,11 +1,10 @@
 import { useState } from 'react'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import AddRecipeForm from './Components/AddRecipeForm'
-import RecipeList from './Components/RecipeList'
-import DeleteRecipeButton from './Components/DeleteRecipeButton'
-import EditRecipeForm from './Components/EditRecipeForm'
+import RecipeList from './components/RecipeList'
 import RecipeDetails from './Components/RecipeDetails'
-
+import FavoritesList from './components/FavoritesList';
+import RecommendationsList from './components/RecommendationsList';
 
 const App = () => {
   return (
@@ -13,6 +12,8 @@ const App = () => {
         <div>
           <AddRecipeForm/>
           <RecipeList/>
+          <FavoritesList/>
+          <RecommendationsList/>
         </div>
         <Router>
           <div>
