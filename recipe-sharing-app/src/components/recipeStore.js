@@ -34,6 +34,21 @@ const useRecipeStore = create(set => ({
     )
   })),
 
+  // Action to add a new recipe
+  addRecipe: (newRecipe) => set(state => {
+    const updatedRecipes = [...state.recipes, newRecipe];
+    return {
+      recipes: updatedRecipes,
+      filteredRecipes: updatedRecipes.filter(recipe =>
+        recipe.title.toLowerCase().includes(state.searchTerm.toLowerCase()) ||
+        recipe.ingredients.some(ingredient =>
+          ingredient.toLowerCase().includes(state.searchTerm.toLowerCase())
+        ) ||
+        recipe.preparationTime.toString().includes(state.searchTerm.toLowerCase())
+      ),
+    };
+  }),
+
   // Action to add a recipe to favorites
   addFavorite: (recipeId) => set(state => ({
     favorites: [...state.favorites, recipeId]
