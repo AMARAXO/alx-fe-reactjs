@@ -1,3 +1,4 @@
+// src/TodoList.js
 import React, { useState } from 'react';
 
 const TodoList = () => {
@@ -11,7 +12,14 @@ const TodoList = () => {
   const addTodo = (text) => {
     const newId = todos.length ? todos[todos.length - 1].id + 1 : 1;
     setTodos([...todos, { id: newId, text, completed: false }]);
-    setNewTodo('');
+    setNewTodo(''); // Clear the input field after adding the todo
+  };
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    if (newTodo.trim()) {
+      addTodo(newTodo);
+    }
   };
 
   const toggleTodo = (id) => {
@@ -25,23 +33,16 @@ const TodoList = () => {
   const deleteTodo = (id) => {
     setTodos(todos.filter((todo) => todo.id !== id));
   };
-  
 
   return (
     <div>
       <h1>Todo List</h1>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          if (newTodo.trim()) {
-            addTodo(newTodo);
-          }
-        }}
-      >
+      <form onSubmit={handleFormSubmit}>
         <input
           type="text"
           value={newTodo}
           onChange={(e) => setNewTodo(e.target.value)}
+          placeholder="Add a new todo"
         />
         <button type="submit">Add Todo</button>
       </form>
