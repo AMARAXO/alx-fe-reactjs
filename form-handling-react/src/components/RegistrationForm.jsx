@@ -4,21 +4,32 @@ const RegistrationForm = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [errors, setErrors] = useState({});
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    // Basic validation
-    if (!username || !email || !password) {
-      setError('All fields are required.');
+    const newErrors = {};
+
+    // Individual field checks
+    if (!username) {
+      newErrors.username = 'Username is required.';
+    }
+    if (!email) {
+      newErrors.email = 'Email is required.';
+    }
+    if (!password) {
+      newErrors.password = 'Password is required.';
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
-    
-    // Clear the error if form is valid
-    setError('');
 
-    // Handle form submission (e.g., send data to backend or perform other actions)
+    // Clear errors if form is valid
+    setErrors({});
+
+    // Handle form submission
     console.log('Form submitted:', { username, email, password });
 
     // Clear form fields after submission
@@ -37,6 +48,7 @@ const RegistrationForm = () => {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
+        {errors.username && <p style={{ color: 'red' }}>{errors.username}</p>}
       </div>
 
       <div>
@@ -47,6 +59,7 @@ const RegistrationForm = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
+        {errors.email && <p style={{ color: 'red' }}>{errors.email}</p>}
       </div>
 
       <div>
@@ -57,9 +70,8 @@ const RegistrationForm = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
+        {errors.password && <p style={{ color: 'red' }}>{errors.password}</p>}
       </div>
-
-      {error && <p style={{ color: 'red' }}>{error}</p>}
 
       <button type="submit">Register</button>
     </form>
