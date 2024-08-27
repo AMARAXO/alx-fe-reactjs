@@ -1,14 +1,13 @@
-import { useState } from 'react';
-import { useRecipeStore } from '../store/RecipeStore';
+import React, { useState } from 'react';
+import useRecipeStore from './useRecipeStore';
 
 const EditRecipeForm = ({ recipe }) => {
   const [title, setTitle] = useState(recipe.title);
   const [description, setDescription] = useState(recipe.description);
-  const updateRecipe = useRecipeStore(state => state.updateRecipe);
+  const updateRecipe = useRecipeStore((state) => state.updateRecipe);
 
-  // Handle the form submission
   const handleSubmit = (event) => {
-    event.preventDefault(); // Prevent the default form submission behavior
+    event.preventDefault();
 
     const updatedRecipe = {
       ...recipe,
