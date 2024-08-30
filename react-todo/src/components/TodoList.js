@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 
 const initialTodos = [
   { id: 1, text: 'Learn React', completed: false },
@@ -9,29 +9,39 @@ function TodoList() {
   const [todos, setTodos] = useState(initialTodos);
   const [newTodo, setNewTodo] = useState('');
 
-  const addTodo = () => {
+  const addTodo = useCallback(() => {
     if (newTodo.trim() === '') return;
-    setTodos([...todos, { id: Date.now(), text: newTodo, completed: false }]);
+    setTodos(prevTodos => [
+      ...prevTodos,
+      { id: Date.now(), text: newTodo, completed: false }
+    ]);
     setNewTodo('');
-  };
+  }, [newTodo]);
 
-  const toggleTodo = (id) => {
-    setTodos(todos.map(todo =>
-      todo.id === id ? { ...todo, completed: !todo.completed } : todo
-    ));
-  };
+  const toggleTodo = useCallback((id) => {
+    setTodos(prevTodos => 
+      prevTodos.map(todo =>
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo
+      )
+    );
+  }, []);
 
-  const deleteTodo = (id) => {
-    setTodos(todos.filter(todo => todo.id !== id));
-  };
+  const deleteTodo = useCallback((id, e) => {
+    e.stopPropagation(); // Prevent click event from triggering the <li> click handler
+    setTodos(prevTodos => prevTodos.filter(todo => todo.id !== id));
+  }, []);
 
   return (
     <div>
       <ul>
         {todos.map(todo => (
-          <li key={todo.id} onClick={() => toggleTodo(todo.id)} style={{ textDecoration: todo.completed ? 'line-through' : 'none' }}>
+          <li
+            key={todo.id}
+            onClick={() => toggleTodo(todo.id)}
+            style={{ textDecoration: todo.completed ? 'line-through' : 'none' }}
+          >
             {todo.text}
-            <button onClick={() => deleteTodo(todo.id)}>Delete</button>
+            <button onClick={(e) => deleteTodo(todo.id, e)}>Delete</button>
           </li>
         ))}
       </ul>

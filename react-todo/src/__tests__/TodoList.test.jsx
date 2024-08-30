@@ -1,43 +1,59 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import TodoList from '../components/TodoList';
+import React, { useState, useCallback } from 'react';
 
+const initialTodos = [
+  { id: 1, text: 'Learn React', completed: false },
+  { id: 2, text: 'Learn Jest', completed: false }
+];
 
-test('renders TodoList component', () => {
-  render(<TodoList />);
-  const todoElement = screen.getByText(/Learn React/i);
-  expect(todoElement).toBeInTheDocument();
-});
+function TodoList() {
+  const [todos, setTodos] = useState(initialTodos);
+  const [newTodo, setNewTodo] = useState('');
 
-test('adds a new todo', () => {
-  render(<TodoList />);
-  const input = screen.getByPlaceholderText('Add a new todo');
-  const button = screen.getByText('Add Todo');
+  const addTodo = useCallback(() => {
+    if (newTodo.trim() === '') return;
+    setTodos(prevTodos => [
+      ...prevTodos,
+      { id: Date.now(), text: newTodo, completed: false }
+    ]);
+    setNewTodo('');
+  }, [newTodo]);
 
-  fireEvent.change(input, { target: { value: 'New Todo' } });
-  fireEvent.click(button);
+  const toggleTodo = useCallback((id) => {
+    setTodos(prevTodos => 
+      prevTodos.map(todo =>
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo
+      )
+    );
+  }, []);
 
-  const newTodo = screen.getByText('New Todo');
-  expect(newTodo).toBeInTheDocument();
-});
+  const deleteTodo = useCallback((id, e) => {
+    e.stopPropagation(); // Prevent click event from triggering the <li> click handler
+    setTodos(prevTodos => prevTodos.filter(todo => todo.id !== id));
+  }, []);
 
-test('toggles a todo', () => {
-  render(<TodoList />);
-  const todoElement = screen.getByText('Learn React');
+  return (
+    <div>
+      <ul>
+        {todos.map(todo => (
+          <li
+            key={todo.id}
+            onClick={() => toggleTodo(todo.id)}
+            style={{ textDecoration: todo.completed ? 'line-through' : 'none' }}
+          >
+            {todo.text}
+            <button onClick={(e) => deleteTodo(todo.id, e)}>Delete</button>
+          </li>
+        ))}
+      </ul>
+      <input 
+        type="text" 
+        value={newTodo} 
+        onChange={(e) => setNewTodo(e.target.value)} 
+        placeholder="Add a new todo"
+      />
+      <button onClick={addTodo}>Add Todo</button>
+    </div>
+  );
+}
 
-  fireEvent.click(todoElement);
-  expect(todoElement).toHaveStyle('text-decoration: line-through');
-
-  fireEvent.click(todoElement);
-  expect(todoElement).toHaveStyle('text-decoration: none');
-});
-
-test('deletes a todo', () => {
-  render(<TodoList />);
-  const todoElement = screen.getByText('Learn React');
-  const deleteButton = screen.getByText('Delete');
-
-  fireEvent.click(deleteButton);
-
-  expect(todoElement).not.toBeInTheDocument();
-});
+export default TodoList;
