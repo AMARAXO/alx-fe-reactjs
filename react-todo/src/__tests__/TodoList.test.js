@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import TodoList from '../TodoList';
+import TodoList from '../components/TodoList';
 
 describe('TodoList Component', () => {
   test('renders the initial todos', () => {
@@ -11,7 +11,7 @@ describe('TodoList Component', () => {
 
   test('adds a new todo', () => {
     render(<TodoList />);
-    fireEvent.change(screen.getByPlaceholderText('Enter a new todo'), {
+    fireEvent.change(screen.getByRole('textbox'), {
       target: { value: 'Write Tests' },
     });
     fireEvent.click(screen.getByText('Add Todo'));
@@ -29,7 +29,8 @@ describe('TodoList Component', () => {
 
   test('deletes a todo', () => {
     render(<TodoList />);
-    fireEvent.click(screen.getByText('Delete'));
+    const deleteButton = screen.getAllByText('Delete')[0];
+    fireEvent.click(deleteButton);
     expect(screen.queryByText('Learn React')).not.toBeInTheDocument();
   });
 });
