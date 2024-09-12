@@ -10,7 +10,7 @@ const AddRecipeForm = () => {
     const newErrors = {};
     if (!title) newErrors.title = 'Title is required';
     if (!ingredients) newErrors.ingredients = 'Ingredients are required';
-    if (!instructions) newErrors.instructions = 'Instructions are required';
+    if (!instructions) newErrors.instructions = 'Preparation steps are required';
     if (ingredients.split('\n').length < 2) newErrors.ingredients = 'Please provide at least two ingredients';
     return newErrors;
   };
