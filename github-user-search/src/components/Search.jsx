@@ -9,18 +9,7 @@ const Search = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const [currentPage, setCurrentPage] = useState(1);
-const [totalCount, setTotalCount] = useState(0);
 
-// Inside handleSubmit
-setTotalCount(data.total_count); // Update total count based on the API response
-
-// Add a Load More button
-{userData.length > 0 && userData.length < totalCount && (
-  <button onClick={() => setCurrentPage(currentPage + 1)} className="mt-4 bg-blue-500 text-white px-4 py-2 rounded">
-    Load More
-  </button>
-)}
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -44,7 +33,6 @@ setTotalCount(data.total_count); // Update total count based on the API response
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-        <h1 className="text-2xl font-bold mb-4 text-center">GitHub User Search</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="text"
