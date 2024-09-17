@@ -14,12 +14,17 @@ const Search = () => {
 
     try {
       const data = await fetchUserData(username);
-      if (data) {
+      
+      // Check if the data returned is an error response (not found)
+      if (data.message === 'Not Found') {
+        setError("Looks like we can't find the user");
+        setUserData(null); // Reset user data on error
+      } else {
         setUserData(data);
       }
     } catch (err) {
       setError("Looks like we can't find the user");
-      setUserData(null); // Reset userData on error
+      setUserData(null); // Reset user data on error
     } finally {
       setLoading(false);
     }
